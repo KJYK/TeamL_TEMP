@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>연구실 소개</title>
+  <style>
+    /* 기본 레이아웃 */
+    body {
+      margin: 0px;
+      font-family: sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    section {
+      position: relative;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 50px;
+      box-sizing: border-box;
+    }
+    /* 히어로 이미지 */
+    #hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: url('Narrow.png') center/cover no-repeat; /* 배경 이미지 설정 */
+      color: #fff; /* 텍스트 색상 */
+    }
+
+    #hero .overlay-text {
+      position: relative;
+      z-index: 1; /* 텍스트가 배경 위에 표시되도록 설정 */
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5); /* 배경 이미지 위에 반투명 검정색 오버레이 */
+      z-index: 0; /* 오버레이가 텍스트 뒤에 위치 */
+    }
+    #hero .overlay-text h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+    #hero .overlay-text h2 {
+      margin-top: 10px;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    /* 연구 주제 섹션 */
+    #topics {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    .topic-container {
+      display: flex;
+      width: 100%;
+      margin-bottom: 20px;
+      justify-content: center;
+      position: relative;
+    }
+    .topic-item, .topicsRight-item {
+      position: relative;
+      display: block;
+      width: 40%;
+      cursor: pointer;
+      padding: 15px;
+      border-radius: 10px;
+      transition: all 0.4s ease;
+      background: rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .topic-item:hover, .topicsRight-item:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .topic-item img, .topicsRight-item img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+    .title-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: calc(100% / 6);
+      display: flex;
+      align-items: center;
+    }
+    .topic-item .title-container {
+      justify-content: flex-start;
+      left: 0;
+    }
+    .topicsRight-item .title-container {
+      justify-content: flex-end;
+      right: 0;
+    }
+    /* 챕터와 서브챕터 타이틀 스타일 */
+    .chapter-title {
+      font-size: clamp(26px, 3vw, 42px);
+      margin-bottom: 40px;
+      text-align: center;
+      font-weight: 700;
+      position: relative;
+    }
+    
+    .chapter-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .subchapter-title {
+      font-size: clamp(22px, 2.4vw, 36px);
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    /* 연구 주제 카드 텍스트 스타일 */
+    .title {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 10px;
+      width: 65%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: clamp(8px, 1.8vw, 40px);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .topic-item .title {
+      border-radius: 0 5px 0 0;
+      text-align: left;
+      justify-content: flex-start;
+    }
+    .topicsRight-item .title {
+      border-radius: 5px 0 0 0;
+      text-align: right;
+      justify-content: flex-end;
+    }
+    .topic-item:hover .title, .topicsRight-item:hover .title {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* 멤버 섹션 반응형 스타일 */
+    #members .professor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 50px;
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #members .professor img {
+      width: clamp(120px, 15vw, 200px); /* 최소 120px, 기본 15vw, 최대 200px */
+      height: clamp(120px, 15vw, 200px);
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    #members .professor h3 {
+      font-size: clamp(18px, 2vw, 28px); /* 최소 18px, 기본 2vw, 최대 28px */
+      margin-bottom: 10px;
+    }
+    #members .professor p {
+      font-size: clamp(14px, 1.2vw, 18px); /* 최소 14px, 기본 1.2vw, 최대 18px */
+      opacity: 0.8;
+    }
+    #members .students, #members .alumni {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: clamp(15px, 2vw, 30px);
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .member-card {
+      min-width: clamp(100px, 15vw, 200px);
+      text-align: center;
+      font-size: clamp(0.85rem, 1vw, 1rem);
+      padding: 15px;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+    .member-card:hover {
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-5px);
+    }
+    .member-card img {
+      width: clamp(80px, 10vw, 120px); /* 최소 80px, 기본 10vw, 최대 120px */
+      height: clamp(80px, 10vw, 120px);
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    .member-card:hover img {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .member-card p {
+      margin: 5px 0;
+      font-size: clamp(14px, 1.1vw, 16px); /* 최소 14px, 기본 1.1vw, 최대 16px */
+    }
+    .member-card p:first-of-type {
+      font-weight: bold;
+      font-size: clamp(16px, 1.3vw, 18px); /* 최소 16px, 기본 1.3vw, 최대 18px */
+    }
+    /* 표 디자인 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: background 0.3s;
+    }
+    /* 멤버 섹션 */
+    #members .professor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    #members .professor img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 30px;
+    }
+    #members .students, #members .alumni {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    .member-card {
+      min-width: 100px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .member-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 25px;
+    }
+    /* 연락처 */
+    #contact iframe {
+      width: 80%;
+      height: 400px;
+      border: none;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* 애니메이션 클래스 - 간단한 방식으로 재정의 */
+    .animate-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-section.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .animate-section.hide-up {
+      opacity: 0;
+      transform: translateY(-30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-section.hide-down {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    /* 히어로 섹션 오버레이 애니메이션 */
+    #hero .overlay-text {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    #hero .overlay-text.hide {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+  </style>
+</head>
+<body>
+  <!-- 히어로 섹션 -->
+  <section id="hero">
+    <div class="overlay-text">
+        <h1>Where Human Behavior Meets Sensing Technology</h1>
+        <h2>from Human Responses to Interventions, Building a Better Tomorrow</h2>
+    </div>
+  </section>
+
+  <!-- 연구 주제 섹션 -->
+  <section id="topics" class="animate-section" style="padding: 40px;">
+    <h2 class="chapter-title">Research Topics</h2>
+    <div style="display: flex; flex-direction: column; gap: 40px; width: 100%; align-items: center;">
+        <!-- 첫 번째 토픽: 왼쪽으로 10% 치우침 -->
+        <div style="display: flex; justify-content: center; width: 100%; position: relative;">
+            <div class="topic-item animate-section" style="width: 40%; position: relative; left: -10%; text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                <div style="position: relative;">
+                    <img src="ResearchTopic1.png" alt="Topic 1" style="width: 100%; height: auto; border-radius: 8px; display: block;">
+                    <div class="title-container" style="position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% / 6); display: flex; align-items: center; justify-content: flex-start;">
+                        <div class="title" style="border-radius: 0 5px 0 0;">Human Sensing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 두 번째 토픽: 오른쪽으로 10% 치우침 -->
+        <div style="display: flex; justify-content: center; width: 100%; position: relative;">
+            <div class="topicsRight-item animate-section" style="width: 40%; position: relative; left: 10%; text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                <div style="position: relative;">
+                    <img src="ResearchTopic2.png" alt="Topic 2" style="width: 100%; height: auto; border-radius: 8px; display: block;">
+                    <div class="title-container" style="position: absolute; bottom: 0; right: 0; width: 100%; height: calc(100% / 6); display: flex; align-items: center; justify-content: flex-end;">
+                        <div class="title" style="border-radius: 5px 0 0 0;">Data Analysis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 세 번째 토픽: 왼쪽으로 10% 치우침 -->
+        <div style="display: flex; justify-content: center; width: 100%; position: relative;">
+            <div class="topic-item animate-section" style="width: 40%; position: relative; left: -10%; text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                <div style="position: relative;">
+                    <img src="ResearchTopic3.png" alt="Topic 3" style="width: 100%; height: auto; border-radius: 8px; display: block;">
+                    <div class="title-container" style="position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% / 6); display: flex; align-items: center; justify-content: flex-start;">
+                        <div class="title" style="border-radius: 0 5px 0 0;">Design Interventions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- 발행 논문 테이블 -->
+  <section id="publications" class="animate-section">
+    <h2 class="chapter-title">Publications</h2>
+    <table>
+      <thead>
+        <tr><th>Index</th><th>Title</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Paper Title Example A</td><td>2024-03-15</td></tr>
+        <tr><td>2</td><td>Paper Title Example B</td><td>2023-11-10</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 진행 프로젝트 테이블 -->
+  <section id="projects" class="animate-section">
+    <h2 class="chapter-title">Projects</h2>
+    <table>
+      <thead>
+        <tr><th>Index</th><th>Project</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Project Example A</td><td>2024.01 - 진행 중</td></tr>
+        <tr><td>2</td><td>Project Example B</td><td>2023.06 - 2023.12</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 멤버 소개 섹션 -->
+  <section id="members" class="animate-section">
+    <h2 class="chapter-title">Members</h2>
+    
+    <!-- Faculty -->
+    <div id="faculty" class="animate-section">
+        <h3 class="subchapter-title">Faculty</h3>
+        <div class="professor">
+            <img src="HLee.jpg" alt="Faculty">
+            <h3>Dr. Hoonyong Lee</h3>
+            <p>Career & Awards</p>
+        </div>
+    </div>
+    
+    <!-- Students -->
+    <div id="students" class="animate-section">
+        <h3 class="subchapter-title">Students</h3>
+        <div class="students">
+            <div class="member-card">
+                <img src="SKarim.jpg" alt="학생1">
+                <p>Shakir Karim</p>
+                <p>PhD Student</p>
+            </div>
+            <div class="member-card">
+                <img src="JKim.png" alt="학생2">
+                <p>Jinyoung Kim</p>
+                <p>PhD Student</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alumni -->
+    <div id="alumni" class="animate-section">
+        <h3 class="subchapter-title">Alumni</h3>
+        <div class="alumni">
+            <div class="member-card">
+                <p>Alumni1</p>
+                <p>Ph.D.</p>
+                <p>Affiliation: USYD</p>
+            </div>
+            <div class="member-card">
+                <p>Alumni2</p>
+                <p>M.Phil.</p>
+                <p>Affiliation: USYD</p>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- 연락처 -->
+  <section id="contact" class="animate-section">
+    <h2 class="chapter-title">Contact</h2>
+    <!-- 구글 맵스 삽입 예시 -->
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500.3354326265844!2d151.18281584427868!3d-33.88274212236212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b113e078ce6b%3A0x5745c64b1e6a99cd!2z7Iuc65Oc64uIIOyamCDqt7jrprQg7J247Iqk7Yuw7Yis7YWMIO2PrOultCDtlITroZzsoJ3tirgg66as642U7Im9IOuMgO2VmQ!5e0!3m2!1sko!2sau!4v1747106074979!5m2!1sko!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </section>
+
+  <!-- 자바스크립트 - 외부 라이브러리 없이 간단하게 구현 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 애니메이션 적용할 모든 섹션 요소 선택
+      const sections = document.querySelectorAll('.animate-section');
+      const heroText = document.querySelector('#hero .overlay-text');
+      
+      // 스크롤 방향 감지를 위한 변수
+      let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      let scrollDirection = 'down'; // 초기 스크롤 방향
+      
+      // 요소가 화면에 보이는지 확인하는 함수
+      const isInViewport = (element) => {
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.9 &&
+          rect.bottom >= 0
+        );
+      };
+      
+      // 초기 상태 설정 - 보이는 요소는 애니메이션 적용
+      const checkSections = () => {
+        // 현재 스크롤 위치 확인
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // 스크롤 방향 업데이트
+        if (scrollTop > lastScrollTop) {
+          scrollDirection = 'down';
+        } else if (scrollTop < lastScrollTop) {
+          scrollDirection = 'up';
+        }
+        
+        // 각 섹션에 대해 애니메이션 처리
+        sections.forEach(section => {
+          // 현재 요소가 보이는지 확인
+          if (isInViewport(section)) {
+            if (!section.classList.contains('show')) {
+              // 보이는데 아직 show 클래스가 없으면
+              section.classList.remove('hide-up', 'hide-down');
+              section.classList.add('show');
+            }
+          } else {
+            // 뷰포트에서 벗어났을 때, 이전에 보였던 요소만 처리
+            if (section.classList.contains('show')) {
+              section.classList.remove('show');
+              
+              // 스크롤 방향에 따라 다른 방향으로 사라짐
+              if (scrollDirection === 'down') {
+                section.classList.add('hide-up');
+                section.classList.remove('hide-down');
+              } else {
+                section.classList.add('hide-down');
+                section.classList.remove('hide-up');
+              }
+            }
+          }
+        });
+        
+        // 히어로 텍스트 처리
+        if (scrollTop > 100) {
+          heroText.classList.add('hide');
+        } else {
+          heroText.classList.remove('hide');
+        }
+        
+        // 현재 스크롤 위치 저장
+        lastScrollTop = scrollTop;
+      };
+      
+      // 스크롤 이벤트에 체크 함수 바인딩
+      window.addEventListener('scroll', checkSections, { passive: true });
+      
+      // 최초 로드 시 실행
+      checkSections();
+      
+      // 리사이즈 이벤트에도 대응
+      window.addEventListener('resize', checkSections, { passive: true });
+    });
+  </script>
+</body>
+</html>
